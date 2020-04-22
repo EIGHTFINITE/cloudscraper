@@ -217,6 +217,7 @@ function onCloudflareResponse (options, response, body) {
   }
 
   const stringBody = body.toString('utf8');
+  console.log(stringBody);
 
   try {
     validateResponse(options, response, stringBody);
@@ -229,7 +230,7 @@ function onCloudflareResponse (options, response, body) {
     return callback(error);
   }
 
-  const isChallenge = stringBody.indexOf('a = document.getElementById(\'jschl-answer\');') !== -1;
+  const isChallenge = stringBody.match(/document.getElementById\(\'jschl\+answer\'\.(.*)$/);
 
   if (isChallenge) {
     return onChallenge(options, response, stringBody);
@@ -273,11 +274,14 @@ function validateResponse (options, response, body) {
     throw new CaptchaError('captcha', options, response);
   }
 
-  // Trying to find '<span class="cf-error-code">1006</span>'
-  const match = body.match(/<\w+\s+class="cf-error-code">(.*)<\/\w+>/i);
-
-  if (match) {
-    const code = parseInt(match[1]);
+  // Trying to find '<span class="cf-error-code">1006</span>' BUT not in on-page online scripts
+  const scriptElementRegexp = /\'<\w+\s+class="cf-error-code">(.*)<\/\w+>\'/i;
+  const domElementRegexp = /<\w+\s+class="cf-error-code">(.*)<\/\w+>/i;
+  const scriptElementMatch = body.match(scriptElementRegexp);
+  const domElementMatch = body.match(domElementRegexp);
+  
+  if (domElementMatch && !scriptElementMatch) {
+    const code = parseInt(domElementMatch[1]);
     throw new CloudflareError(code, options, response);
   }
 
@@ -311,7 +315,7 @@ function onChallenge (options, response, body) {
     payload[hiddenInputName] = match[2];
   }
 
-  match = body.match(/name="jschl_vc" value="(\w+)"/);
+  match = body.match(/value=\"(\w+)\"\sid=\"\S+\"\sname=\"jschl_vc\"/);
   if (!match) {
     cause = 'challengeId (jschl_vc) extraction failed';
     return callback(new ParserError(cause, options, response));
