@@ -217,7 +217,7 @@ function onCloudflareResponse (options, response, body) {
   }
 
   const stringBody = body.toString('utf8');
-  // console.log(stringBody);
+  //console.log(stringBody);
 
   try {
     validateResponse(options, response, stringBody);
