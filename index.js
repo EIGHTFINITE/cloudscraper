@@ -556,8 +556,8 @@ function onSubmitCaptcha (options, response) {
   const uri = response.request.uri;
   const isRecaptchaVer2 = response.captcha.version === 'ver2';
 
-  if (!response.captcha.form['g-recaptcha-response']) {
-    const cause = 'Form submission without g-recaptcha-response';
+  if (!response.captcha.form['g-recaptcha-response'] && !response.captcha.form['h-captcha-response']) {
+    const cause = 'Form submission without g-recaptcha-response or h-captcha-response';
     return callback(new CaptchaError(cause, options, response));
   }
 
