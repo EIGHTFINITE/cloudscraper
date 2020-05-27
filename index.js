@@ -322,7 +322,7 @@ function onChallenge (options, response, $) {
   }
 
   const cloudFlareScriptContents = $('script[type]').html();
-  const cloudflareScriptMatch = cloudFlareScriptContents.match(/getElementById\('cf-content'\)[\s\S]+?setTimeout.+?\r?\n([\s\S]+?a\.value\s*=.+?)\r?\n(?:[^{<>]*},\s*(\d{4,}))?/);
+  const cloudflareScriptMatch = cloudFlareScriptContents.match(/getElementById\('cf-content'\)[\s\S]+?setTimeout.+?\r?\n([\s\S]+?a\.value[\s\S]+\.toFixed\(10\);)[\s\S]+\}\,(\d{4,})/);
   if (!cloudflareScriptMatch) {
     cause = 'setTimeout callback extraction failed';
     return callback(new ParserError(cause, options, response));
@@ -347,6 +347,7 @@ function onChallenge (options, response, $) {
 
   // Append a.value so it's always returned from the vm
   response.challenge = cloudflareScriptMatch[1] + '; a.value';
+  response.challenge = response.challenge.replace(/\(setInterval\(function\(\)\{\},\s100\)\,t\.match\(\/https\?\:\\\/\\\/\/\)\[0\]\);/g, 't.match(/https?:\\/\\//)[0];');
 
   try {
     const ctx = new sandbox.Context({
