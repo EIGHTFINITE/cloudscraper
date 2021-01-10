@@ -6,7 +6,7 @@ import {
   CaptchaResponse, Captcha
 } from './index';
 import Promise = require('bluebird');
-import request = require('request');
+import request = require('postman-request');
 import rp = require('request-promise');
 import cloudscraper = require('./index');
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var requester = require('request');
+var requester = require('postman-request');
 var cloudscraper = require('../..').defaults({ requester: requester });
 var uri = process.argv[2];
 

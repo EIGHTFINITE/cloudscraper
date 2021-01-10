@@ -399,7 +399,7 @@ describe('Cloudscraper', function () {
   it('should throw a TypeError if callback is not a function', function (done) {
     const spy = sinon.spy(function () {
       // request-promise always provides a callback so change requester
-      const options = { uri: uri, requester: require('request') };
+      const options = { uri: uri, requester: require('postman-request') };
       cloudscraper.get(options);
     });
 
