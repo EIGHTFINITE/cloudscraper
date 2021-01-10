@@ -42,7 +42,7 @@
   "homepage": "https://github.com/codemanki/cloudscraper",
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
-    "request-promise": "^4.2.4"
+    "request-promise": "EIGHTFINITE/request-promise#master"
   },
   "devDependencies": {
     "@types/request-promise": "^4.1.44",
