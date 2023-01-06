@@ -741,4 +741,40 @@ describe('Cloudscraper', function () {
       expect(promise).to.eventually.equal(requestedPage).and.notify(done);
     });
   });
+
+  it('should resolve challenge (version as on 23.04.2020) and then return page', function (done) {
+    helper.router
+      .get('/test', function (req, res) {
+        res.sendChallenge('js_challenge_23_04_2020.html');
+      })
+      .post('/', function (req, res) {
+        res.send(requestedPage);
+      });
+
+    const expectedParams = helper.extendParams({
+      uri: helper.resolve('/?__cf_chl_jschl_tk__=xxxxx'),
+      method: 'POST',
+      form: {
+        r: 'f93fb9df140c2f83b65ec671d33ccc68c8f2cdb4-1587595117-0-ARk4v5QNkRwYqiji4+0L1X/TvlsWn/f1UIYIwT0LI7vuzqf/sPyMr45U8QBspUxv5kfdw+isLf7Eb1Hl+h/40csBtkmO3Uh6s+3UiPW1ydEgv2CB/fSL2Mg1NcIratoZOPxj4hhPm0l5CjDg9/1KIZvrlZ6OgsA1Zy3x+0RgJBlegKtK4hbdPh0iqnUB92ARSg2ODtcTpLLqkE/lhoGdxiMwTs1Q0/HP/PetK7N9z4QMQ9dxxyQ9xIZiHgOOoKqz2EF5lI0wS9QvtFYZISJk9TjE2YiXgv+ePVfQOPx1ghXUu4cyIj4+be7JMetY2t+j2pi3TTolkBYxx8mYRS8aA54Nm0NKiymlg4+2tiW4+aWLSCpiazSHtxx3E4+AbIbyeG9DVCuQGiaEVExZuxFcwqDHK3RiNgRgJyD5IfVpsFmNImChlNxwLeZAeCF2Zv4DUvq0E7zd3PMPfg1Ly5cr7hYIU+aWkwPSOyzpva6J1/T+y4Txalymtc+oua8GKiz3VrK6jqCKf3yNHCEshQ1iO/ppiutMOGAiGlwwsxVGBl48Rc5LRV7J6sYa83idppkwyiRqDz9AHdKrwosPbscZZWM46sGHR6V7WWoEJ/47U1AuMyo7zCyenB+KXVyBHJ6yLfZWjBy/uIAaAWKvtBLBlShpE24c43kUX6qOPjiGhdZNgkXopen3TlSSpaDZFXLhkASdu++YBloDrOwGhi3KFNtgSSPWHlQaT4SKOEmPbpE8iQmWCu3fp8vUUsrOMT1PD0/oDMiOIPnU5JdNlAsCCvqBoQbo4VBs7GL2OMx3o5TuuXXGDa0/ms1Qdxhjo4lqHtURjoW203DD5ibN3O3dGEMb4t0CjGHYsM9gc34cBOPfOdddFk5/3X5lMVCHoqlYKYcxi69G/I49izgmn+u0fI2hM5QYxj3W6hB7QDZI4m0zCYAvXsorxJADbhvKd0FO2BC5fJ/BMZEXpVawQR9IfK+7zUF2nz2tG5JRhBgkdWAiKte/ArHdLZzhwNnLEmdSTOunpXZeOihTvOlg7n5FtMKa8EFvem2e1ngEXdOCsV1P3PMlXopenlb8I10Td+b2/aQ7fM7lqoRg/maVzwvZVA8H4vFFY/JKEJ8oE9gjwIxTNtbqI47JbMarT4YqHrkjTI0unDCa8pxVhjD9ZI8xe8+Oa5okU8rIPoBD6dI15g006gDBlkgeIPJEQD5seqpJ9RZ5KJ31tyGuTB2sLuLyTO8KBRkkAIYr0SU4lOVB7C4MLnJZ9gwNJnyaoVZWvf/Y+AW0Ngf1/yS1RBXZaePNCNnj24KnZkdOj548vKYTrgW+leVncll1vI3dL0FMM73d/sgDwhunppjNKjxmsNHVWORGEFIcKXQs7uI3DSzjuxmr1SuEWYZ/uDxOyMl0WU55GLCFX5zDyM3qiC7B+ZrmRGT7m4DhYDSXhSUPPldwF5CFdTfVgfCqDgmfXnBTwqAeqrvesiWaiUGSm+7Wm4jNXVgl/D5N13CJ1ZbeHdKWTI4YdnjH1870LH6ajA5y4smKtpUWTn142tCUPZB/xkY+7NOOmG6dXynKVCnsA5PYMs1HGlZ8JjM+2D5NcnFuDLvsyXmPTBVeMX7EdGDObFJxSxMMBJFudkEIQktmHWTD6MfE7EiM1ao9PlMzlvNfGM4CAojlv7Ci/kb0Rn8pGaorY+gxrITpB/XaVcLefE7pKl2mEb9EMFq9ZV+Uyv08rGyLW4N/42xS+UnAdo9HC7VA8oi+ZDbqoFgLlxMx8ECJvYkRetUPLXvWYlvdlspTzGe90utP8ZizM1yUKi/63DvkvPsGHG6V5NFl+Q656+orzIjfbEdv1fUB0gqW1IkqTcz08g==',
+        jschl_vc: '73470d12d1ed57f9e6253b489a0a9c7f',
+        jschl_answer: String(20.2553376255 + helper.uri.hostname.length),
+        pass: '1587595121.945-KgYb2bHnSl'
+      },
+      headers: {
+        Referer: uri
+      },
+      challengesToSolve: 2
+    });
+
+    const promise = cloudscraper.get(uri, function (error, response, body) {
+      expect(error).to.be.null;
+
+      expect(Request).to.be.calledTwice;
+      expect(Request.firstCall).to.be.calledWithExactly(helper.defaultParams);
+      expect(Request.secondCall).to.be.calledWithExactly(expectedParams);
+
+      expect(body).to.be.equal(requestedPage);
+      expect(promise).to.eventually.equal(requestedPage).and.notify(done);
+    });
+  });
 });
