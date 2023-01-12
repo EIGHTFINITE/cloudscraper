@@ -41,7 +41,7 @@
   "license": "MIT",
   "homepage": "https://github.com/codemanki/cloudscraper",
   "dependencies": {
-    "cheerio": "^1.0.0-rc.3",
+    "cheerio": "EIGHTFINITE/cheerio#main",
     "request-promise": "EIGHTFINITE/request-promise#master"
   },
   "devDependencies": {
