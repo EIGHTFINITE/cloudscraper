@@ -30,31 +30,12 @@ const expect = require('chai').expect;
     expect(result.toString('utf8')).to.equal('abc');
   });
 
-  (zlib.brotliCompressSync ? it : it.skip)('[internal] decompress() should produce the expected result', function () {
+  it('decompress() should produce the expected result', function () {
     const input = helper.getFixture('captcha.html');
     const data = zlib.brotliCompressSync(Buffer.from(input, 'utf8'));
     const result = brotli.decompress(data);
 
     expect(result).to.be.instanceof(Buffer);
     expect(result.toString('utf8')).to.equal(input);
-  });
-
-  (zlib.brotliCompressSync ? it.skip : it)('[external] decompress() should produce the expected result', function () {
-    const input = helper.getFixture('captcha.html');
-    // Try increasing the timeout if this fails on your system.
-    const data = require('brotli').compress(Buffer.from(input, 'utf8'));
-    const result = brotli.decompress(Buffer.from(data));
-
-    expect(result).to.be.instanceof(Buffer);
-    expect(result.toString('utf8')).to.equal(input);
-  });
-
-  it('optional() should throw an error if the module contains an error', function () {
-    const spy = sinon.spy(function () {
-      // This method should throw if called without arguments
-      brotli.optional();
-    });
-
-    expect(spy).to.throw();
   });
 });
